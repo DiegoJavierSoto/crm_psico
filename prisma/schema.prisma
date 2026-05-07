@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  phone         String?
+  licenseNumber String?
+  specialty     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  patients     Patient[]
+  appointments Appointment[]
+  sessionNotes SessionNote[]
+  followUps    FollowUp[]
+  alerts       Alert[]
+}
+
+model Patient {
+  id                String   @id @default(cuid())
+  userId            String
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String?
+  dateOfBirth       String?
+  status            String   @default("ADMISSION") // ADMISSION, TREATMENT, DISCHARGE, INACTIVE
+  reasonForConsult  String?
+  background        String?
+  emergencyContact  String?
+  emergencyPhone    String?
+  referredBy        String?
+  notes             String?
+  lastContactDate   String?
+  sessionFrequency  Int      @default(1) // sessions per week
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  sessionNotes SessionNote[]
+  followUps    FollowUp[]
+  alerts       Alert[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  userId      String
+  patientId   String
+  date        String   // ISO date string yyyy-MM-dd
+  startTime   String   // HH:mm format
+  endTime     String   // HH:mm format
+  status      String   @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED, NO_SHOW
+  type        String   @default("SESSION") // SESSION, FOLLOW_UP, INITIAL, EVALUATION
+  notes       String?
+  reminderSent Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  sessionNote SessionNote?
+
+  @@index([userId])
+  @@index([patientId])
+  @@index([date])
+  @@index([status])
+}
+
+model SessionNote {
+  id             String   @id @default(cuid())
+  userId         String
+  patientId      String
+  appointmentId  String?  @unique
+  content        String   // Clinical notes content (encrypted at rest conceptually)
+  mood           String?  // Patient mood observation
+  techniques     String?  // Techniques used
+  homework       String?  // Homework assigned
+  nextSessionPlan String? // Plan for next session
+  isPrivate      Boolean  @default(true) // Protected/private notes
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([patientId])
+}
+
+model FollowUp {
+  id              String   @id @default(cuid())
+  userId          String
+  patientId       String
+  type            String   @default("CHECK_IN") // CHECK_IN, EVOLUTION_CONTROL, RE_ENGAGEMENT, POST_DISCHARGE
+  suggestedDate   String   // ISO date string yyyy-MM-dd
+  completedDate   String?
+  status          String   @default("PENDING") // PENDING, COMPLETED, OVERDUE, CANCELLED
+  notes           String?
+  contactMethod   String   @default("PHONE") // PHONE, EMAIL, MESSAGE
+  contactResult   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([patientId])
+  @@index([suggestedDate])
+  @@index([status])
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  userId      String
+  patientId   String?
+  type        String   // APPOINTMENT_REMINDER, INACTIVE_PATIENT, MISSED_SESSION, FOLLOW_UP_DUE, NO_SHOW
+  title       String
+  message     String
+  severity    String   @default("INFO") // INFO, WARNING, URGENT
+  isRead      Boolean  @default(false)
+  isDismissed Boolean  @default(false)
+  actionTaken String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patient Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([isDismissed])
+}

@@ -58,7 +58,7 @@ export function useApiMutation<TData, TVariables = unknown>() {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api'] })
+      queryClient.invalidateQueries()
     },
   })
 }

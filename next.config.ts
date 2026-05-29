@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Solo usar standalone si no estamos construyendo en Vercel
+  ...(process.env.VERCEL ? {} : { output: "standalone" }),
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

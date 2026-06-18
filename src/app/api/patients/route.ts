@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/api-auth'
 import { db } from '@/lib/db'
-import { todayISO } from '@/lib/date-utils'
+import { todayISO, addDays } from '@/lib/date-utils'
 
 export async function GET(request: NextRequest) {
   const auth = await requireAuth()
@@ -55,11 +55,13 @@ export async function POST(request: NextRequest) {
       email,
       phone,
       dateOfBirth,
+      status,
       reasonForConsult,
       background,
       emergencyContact,
       emergencyPhone,
       referredBy,
+      notes,
       sessionFrequency,
     } = body
 
@@ -78,15 +80,32 @@ export async function POST(request: NextRequest) {
         email: email || null,
         phone: phone || null,
         dateOfBirth: dateOfBirth || null,
+        status: status || 'ADMISSION',
         reasonForConsult: reasonForConsult || null,
         background: background || null,
         emergencyContact: emergencyContact || null,
         emergencyPhone: emergencyPhone || null,
         referredBy: referredBy || null,
+        notes: notes || null,
         sessionFrequency: sessionFrequency || 1,
         lastContactDate: todayISO(),
       },
     })
+
+    // If status is TREATMENT, create a follow-up for initial check-in (7 days)
+    if (status === 'TREATMENT') {
+      await db.followUp.create({
+        data: {
+          userId: auth.userId,
+          patientId: patient.id,
+          type: 'CHECK_IN',
+          suggestedDate: addDays(todayISO(), 7),
+          status: 'PENDING',
+          contactMethod: 'PHONE',
+          notes: 'Seguimiento inicial después de admisión',
+        },
+      })
+    }
 
     return NextResponse.json({ data: patient }, { status: 201 })
   } catch (error) {

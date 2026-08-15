@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CalendarCheck, FileText, Shield, ArrowRight, Brain } from 'lucide-react'
+import { CalendarCheck, FileText, Shield, ArrowRight, Briefcase } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useAppStore } from '@/store/app-store'
@@ -29,7 +29,7 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.15, duration: 0.5, ease: 'easeOut' },
+    transition: { delay: i * 0.15, duration: 0.5, ease: 'easeOut' as const },
   }),
 }
 
@@ -42,8 +42,8 @@ export function LandingPage() {
       <header className="w-full border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Brain className="h-7 w-7 text-primary" />
-            <span className="text-xl font-bold text-foreground tracking-tight">PsicoCRM</span>
+            <Briefcase className="h-7 w-7 text-primary" />
+            <span className="text-xl font-bold text-foreground tracking-tight">ConsultingDesk</span>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -183,11 +183,11 @@ export function LandingPage() {
       <footer className="border-t border-border/50 bg-muted/30 py-8 mt-auto">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" />
-            <span className="font-semibold text-foreground">PsicoCRM</span>
+            <Briefcase className="h-5 w-5 text-primary" />
+            <span className="font-semibold text-foreground">ConsultingDesk</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} PsicoCRM. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ConsultingDesk. Todos los derechos reservados.
           </p>
         </div>
       </footer>

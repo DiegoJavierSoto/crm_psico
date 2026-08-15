@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type View = 'landing' | 'login' | 'register' | 'dashboard' | 'calendar' | 'patient-detail' | 'settings'
+export type View = 'landing' | 'login' | 'register' | 'forgot-password' | 'dashboard' | 'calendar' | 'patient-detail' | 'settings'
 
 interface User {
   id: string

@@ -23,6 +23,7 @@ model User {
   sessionNotes SessionNote[]
   followUps    FollowUp[]
   alerts       Alert[]
+  passwordResets PasswordReset[]
 }
 
 model Patient {
@@ -41,7 +42,7 @@ model Patient {
   referredBy        String?
   notes             String?
   lastContactDate   String?
-  sessionFrequency  Int      @default(1) // sessions per week
+  sessionFrequency  String   @default("Semanal") // Frecuencia de las sesiones (e.g. "Semanal", "Quincenal")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -145,3 +146,17 @@ model Alert {
   @@index([isRead])
   @@index([isDismissed])
 }
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+

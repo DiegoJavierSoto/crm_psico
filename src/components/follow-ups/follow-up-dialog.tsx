@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import {
@@ -70,7 +70,7 @@ export function FollowUpDialog({
   patientId,
   followUp,
 }: FollowUpDialogProps) {
-  const mutation = useApiMutation<FollowUp, FollowUpFormValues>()
+  const mutation = useApiMutation<FollowUp, FollowUpFormValues & { patientId?: string }>()
 
   const form = useForm<FollowUpFormValues>({
     resolver: zodResolver(followUpSchema),

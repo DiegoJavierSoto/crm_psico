@@ -248,7 +248,7 @@ export function DashboardPage() {
 
   // Chart data (last 8 weeks) - counts real appointments per week
   const chartData = useMemo(() => {
-    const weeks = []
+    const weeks: { week: string; citas: number }[] = []
     const now = new Date()
     for (let i = 7; i >= 0; i--) {
       const weekStart = new Date(now)

@@ -10,7 +10,7 @@ import {
   Settings,
   LogOut,
   Menu,
-  Brain,
+  Briefcase,
   X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -63,8 +63,8 @@ function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-2 px-6 h-16 border-b border-border/50">
-        <Brain className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold text-foreground">PsicoCRM</span>
+        <Briefcase className="h-6 w-6 text-primary" />
+        <span className="text-lg font-bold text-foreground">ConsultingDesk</span>
       </div>
 
       {/* Nav Items */}
@@ -146,6 +146,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     landing: '',
     login: '',
     register: '',
+    'forgot-password': '',
     dashboard: 'Dashboard',
     calendar: 'Agenda',
     'patient-detail': 'Expediente',
@@ -185,7 +186,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             {/* Breadcrumb / Title */}
             <div className="flex items-center gap-2 flex-1">
               <h1 className="text-base font-semibold text-foreground">
-                {viewTitles[currentView] || 'PsicoCRM'}
+                {viewTitles[currentView] || 'ConsultingDesk'}
               </h1>
             </div>
 
@@ -227,7 +228,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <footer className="border-t border-border/50 py-4 mt-auto">
           <div className="px-4 lg:px-6 flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} PsicoCRM
+              &copy; {new Date().getFullYear()} ConsultingDesk
             </p>
             <p className="text-xs text-muted-foreground">
               Gestion clinica profesional

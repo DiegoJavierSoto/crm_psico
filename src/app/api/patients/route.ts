@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         emergencyPhone: emergencyPhone || null,
         referredBy: referredBy || null,
         notes: notes || null,
-        sessionFrequency: sessionFrequency || 1,
+        sessionFrequency: sessionFrequency || 'Semanal',
         lastContactDate: todayISO(),
       },
     })

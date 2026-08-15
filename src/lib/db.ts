@@ -7,21 +7,20 @@ const globalForPrisma = globalThis as unknown as {
 
 const url = (process.env.TURSO_DATABASE_URL || '').trim()
 const authToken = (process.env.TURSO_AUTH_TOKEN || '').trim()
+const isProduction = process.env.NODE_ENV === 'production'
 
 let prismaClient: PrismaClient
 
-if (url.startsWith('libsql://') || url.startsWith('https://')) {
+if (isProduction && (url.startsWith('libsql://') || url.startsWith('https://'))) {
   const adapter = new PrismaLibSql({
     url,
     authToken,
   })
-  prismaClient = new PrismaClient({ adapter, log: ['query'] })
+  prismaClient = new PrismaClient({ adapter })
 } else {
-  prismaClient = new PrismaClient({
-    log: ['query'],
-  })
+  prismaClient = new PrismaClient()
 }
 
 export const db = globalForPrisma.prisma ?? prismaClient
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+if (!isProduction) globalForPrisma.prisma = db

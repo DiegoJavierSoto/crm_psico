@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PsicoCRM - Gestion clinica profesional para psicologos",
+  title: "ConsultingDesk - Gestion clinica profesional para psicologos",
   description: "Sistema de gestion clinica profesional para psicologos. Agenda, expediente digital, seguimiento etico y mas.",
-  keywords: ["PsicoCRM", "psicologia", "CRM clinico", "gestion pacientes", "agenda psicologo"],
-  authors: [{ name: "PsicoCRM" }],
+  keywords: ["ConsultingDesk", "psicologia", "CRM clinico", "gestion pacientes", "agenda psicologo"],
+  authors: [{ name: "ConsultingDesk" }],
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>",
   },
 };
 

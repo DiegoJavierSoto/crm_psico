@@ -49,7 +49,7 @@ interface Patient {
   referredBy: string | null
   notes: string | null
   lastContactDate: string | null
-  sessionFrequency: number
+  sessionFrequency: string
   createdAt: string
   appointments: Appointment[]
   sessionNotes: SessionNote[]
@@ -546,7 +546,7 @@ export function PatientDetailPage() {
                   <InfoField label="Estado" value={config.label} />
                   <InfoField label="Motivo de consulta" value={patient.reasonForConsult} />
                   <InfoField label="Antecedentes" value={patient.background} />
-                  <InfoField label="Frecuencia de sesiones" value={`${patient.sessionFrequency} por semana`} />
+                  <InfoField label="Frecuencia de las sesiones" value={patient.sessionFrequency} />
                   <InfoField label="Ultimo contacto" value={patient.lastContactDate ? format(parseISO(patient.lastContactDate), 'd MMM yyyy', { locale: es }) : null} />
                   <InfoField label="Notas generales" value={patient.notes} />
                 </div>

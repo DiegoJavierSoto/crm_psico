@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { User, Save, Loader2 } from 'lucide-react'
+import { User, Save, Loader2, KeyRound } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { AutomationStatus } from '@/components/automation/automation-status'
 import { useAppStore } from '@/store/app-store'
 import { useApiMutation } from '@/hooks/use-api'
+import { useToast } from '@/hooks/use-toast'
 
 const profileSchema = z.object({
   name: z.string().min(2, 'El nombre es obligatorio'),
@@ -23,6 +24,144 @@ const profileSchema = z.object({
 })
 
 type ProfileFormValues = z.infer<typeof profileSchema>
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'La contraseña actual es obligatoria'),
+  newPassword: z.string().min(6, 'La nueva contraseña debe tener al menos 6 caracteres'),
+  confirmNewPassword: z.string().min(6, 'La confirmación debe tener al menos 6 caracteres'),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: 'Las contraseñas no coinciden',
+  path: ['confirmNewPassword'],
+})
+
+type PasswordFormValues = z.infer<typeof passwordSchema>
+
+function PasswordChangeCard() {
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const form = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    },
+  })
+
+  async function onSubmit(data: PasswordFormValues) {
+    setIsLoading(true)
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        }),
+      })
+
+      const result = await res.json()
+
+      if (!res.ok) {
+        toast({
+          title: 'Error al cambiar contraseña',
+          description: result.error || 'La contraseña actual es incorrecta',
+          variant: 'destructive',
+        })
+      } else {
+        toast({
+          title: 'Contraseña actualizada',
+          description: 'Tu contraseña se ha cambiado correctamente.',
+        })
+        form.reset()
+      }
+    } catch {
+      toast({
+        title: 'Error de conexión',
+        description: 'No se pudo comunicar con el servidor.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Card className="border-border/50">
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <KeyRound className="h-4 w-4 text-primary" />
+          Seguridad de la cuenta
+        </CardTitle>
+        <CardDescription>
+          Cambia tu contraseña actual por una nueva
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="currentPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña actual</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nueva contraseña</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Mínimo 6 caracteres" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmNewPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirmar nueva contraseña</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Repite la contraseña" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button
+              type="submit"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Actualizando...
+                </>
+              ) : (
+                'Actualizar contraseña'
+              )}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  )
+}
 
 export function SettingsPage() {
   const { user } = useAppStore()
@@ -184,6 +323,15 @@ export function SettingsPage() {
             </Form>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* Security */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.15 }}
+      >
+        <PasswordChangeCard />
       </motion.div>
 
       {/* Automation */}

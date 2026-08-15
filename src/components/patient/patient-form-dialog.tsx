@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import {
@@ -39,7 +39,7 @@ interface Patient {
   emergencyPhone: string | null
   referredBy: string | null
   notes: string | null
-  sessionFrequency: number
+  sessionFrequency: string
 }
 
 const patientSchema = z.object({
@@ -55,7 +55,7 @@ const patientSchema = z.object({
   emergencyPhone: z.string().optional(),
   referredBy: z.string().optional(),
   notes: z.string().optional(),
-  sessionFrequency: z.coerce.number().min(1).max(7).default(1),
+  sessionFrequency: z.string().min(1, 'Selecciona la frecuencia de las sesiones'),
 })
 
 type PatientFormValues = z.infer<typeof patientSchema>
@@ -109,7 +109,7 @@ export function PatientFormDialog({
       emergencyPhone: '',
       referredBy: '',
       notes: '',
-      sessionFrequency: 1,
+      sessionFrequency: 'Semanal',
     },
   })
 
@@ -338,10 +338,21 @@ export function PatientFormDialog({
                 name="sessionFrequency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sesiones por semana</FormLabel>
-                    <FormControl>
-                      <Input type="number" min={1} max={7} {...field} />
-                    </FormControl>
+                    <FormLabel>Frecuencia de las sesiones</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona la frecuencia" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Semanal">Semanal</SelectItem>
+                        <SelectItem value="Dos veces por semana">Dos veces por semana</SelectItem>
+                        <SelectItem value="Quincenal">Quincenal</SelectItem>
+                        <SelectItem value="Mensual">Mensual</SelectItem>
+                        <SelectItem value="A demanda">A demanda</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

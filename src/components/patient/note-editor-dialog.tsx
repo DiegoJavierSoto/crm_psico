@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import {
@@ -43,7 +43,7 @@ const noteSchema = z.object({
   techniques: z.string().optional(),
   homework: z.string().optional(),
   nextSessionPlan: z.string().optional(),
-  isPrivate: z.boolean().default(true),
+  isPrivate: z.boolean(),
 })
 
 type NoteFormValues = z.infer<typeof noteSchema>
@@ -69,7 +69,7 @@ export function NoteEditorDialog({
   patientId,
   note,
 }: NoteEditorDialogProps) {
-  const mutation = useApiMutation<SessionNote, NoteFormValues>()
+  const mutation = useApiMutation<SessionNote, NoteFormValues & { patientId?: string }>()
 
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),

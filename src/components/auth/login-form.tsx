@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { Brain, ArrowLeft, Loader2 } from 'lucide-react'
+import { Briefcase, ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -59,8 +59,8 @@ export function LoginForm() {
       >
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Brain className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-foreground">PsicoCRM</span>
+            <Briefcase className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold text-foreground">ConsultingDesk</span>
           </div>
         </div>
 
@@ -117,6 +117,16 @@ export function LoginForm() {
                     </FormItem>
                   )}
                 />
+
+                <div className="flex justify-end text-right">
+                  <button
+                    type="button"
+                    onClick={() => setView('forgot-password')}
+                    className="text-xs text-primary hover:underline focus:outline-none cursor-pointer"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
 
                 <Button
                   type="submit"

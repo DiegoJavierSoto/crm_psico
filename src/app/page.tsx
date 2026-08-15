@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { LandingPage } from '@/components/landing/landing-page'
 import { LoginForm } from '@/components/auth/login-form'
 import { RegisterForm } from '@/components/auth/register-form'
+import { ForgotPasswordForm } from '@/components/auth/forgot-password-form'
 import { AppLayout } from '@/components/layout/app-layout'
 import { DashboardPage } from '@/components/dashboard/dashboard-page'
 import { CalendarPage } from '@/components/calendar/calendar-page'
@@ -38,6 +39,8 @@ function AppContent() {
         return <LoginForm />
       case 'register':
         return <RegisterForm />
+      case 'forgot-password':
+        return <ForgotPasswordForm />
       default:
         return <LandingPage />
     }
